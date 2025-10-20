@@ -128,18 +128,22 @@ class PomodoroTimer:
         
         # 切换到下一个会话
         if self.current_session == 0:  # 工作完成
+            # 工作完成后，增加循环次数
+            self.current_cycle += 1
             # 检查是否需要进入长休息
-            if self.current_cycle + 1 >= self.config.config["cycles"]:
+            if self.current_cycle >= self.config.config["cycles"]:
                 # 完成一轮循环，进入长休息
                 self.current_session = 2
-                self.current_cycle = 0
             else:
                 # 进入短休息
                 self.current_session = 1
-        else:  # 休息完成，回到工作
+        elif self.current_session == 1:  # 短休息完成，回到工作
             self.current_session = 0
-            # 开始新的工作会话时增加循环次数
-            self.current_cycle += 1
+            # 短休息完成后不改变循环次数，保持当前循环状态
+        else:  # 长休息完成，回到工作并重置循环
+            self.current_session = 0
+            # 长休息后重新开始，循环次数重置为0
+            self.current_cycle = 0
         
         # 自动开始下一个会话
         self.reset_session()
@@ -155,9 +159,15 @@ class PomodoroTimer:
     def get_status(self):
         """获取当前状态"""
         session_names = ["🍅 工作中", "☕ 短休息", "🛌 长休息"]
+        # 显示循环轮次：工作中显示当前轮次+1，休息时显示已完成的轮次
+        if self.current_session == 0:  # 工作中
+            display_cycle = self.current_cycle + 1
+        else:  # 休息中，显示已完成的工作轮次
+            display_cycle = self.current_cycle
+        
         return {
             "session": session_names[self.current_session],
-            "cycle": self.current_cycle + 1,
+            "cycle": display_cycle,
             "total_cycles": self.config.config["cycles"],
             "remaining_time": self.remaining_time,
             "is_running": self.is_running,
