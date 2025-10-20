@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-番茄钟GUI程序打包脚本
+番茄钟程序打包脚本
 使用PyInstaller将Python程序打包成exe文件
 """
 
