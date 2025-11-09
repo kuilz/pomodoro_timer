@@ -195,12 +195,16 @@ class ConfigWindow:
         
         self.window = tk.Toplevel(self.parent.root)
         self.window.title("番茄钟配置")
-        self.window.geometry("300x280")
+        self.window.geometry("310x280")
         self.window.resizable(False, False)
+
+        # 让窗口网格扩展并居中内容
+        self.window.grid_columnconfigure(0, weight=1)
+        self.window.grid_rowconfigure(0, weight=1)
         
-        # 配置项
+        # 配置项容器居中（不填充）
         frame = ttk.Frame(self.window, padding="10")
-        frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        frame.grid(row=0, column=0)
         
         # 工作时间
         ttk.Label(frame, text="工作时间 (分钟):").grid(row=0, column=0, sticky=tk.W, pady=5)
@@ -276,18 +280,23 @@ class PomodoroApp:
         # 创建主窗口（隐藏）
         self.root = tk.Tk()
         self.root.title("番茄钟")
-        self.root.geometry("350x200")
+        self.root.geometry("310x200")
         self.root.withdraw()  # 隐藏主窗口
+        self.root.attributes('-topmost', True)
         
         self.setup_ui()
         self.create_tray_icon()
         
     def setup_ui(self):
         """设置UI界面"""
-        # 主框架
+        # 让根窗口网格扩展，并使内容居中
+        self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_rowconfigure(0, weight=1)
+
+        # 主框架（不使用 sticky，默认在单元格居中）
         main_frame = ttk.Frame(self.root, padding="10")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        
+        main_frame.grid(row=0, column=0)
+
         # 状态显示
         self.status_label = ttk.Label(main_frame, text="🍅 准备开始", font=("", 14))
         self.status_label.grid(row=0, column=0, columnspan=3, pady=10)
@@ -340,6 +349,7 @@ class PomodoroApp:
         """显示主窗口"""
         self.root.deiconify()
         self.root.lift()
+        self.root.attributes('-topmost', True)
     
     def hide_window(self):
         """隐藏主窗口"""
